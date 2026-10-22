@@ -1,0 +1,22 @@
+// Centralised React Query keys so invalidation stays consistent across features.
+export const queryKeys = {
+  profile: ['profile', 'me'],
+  directory: (filters) => ['directory', filters],
+  opportunities: ['opportunities'],
+  opportunity: (id) => ['opportunities', id],
+  events: ['events'],
+  event: (id) => ['events', id],
+  projects: ['projects', 'me'],
+  announcements: ['announcements'],
+  adminUsers: ['admin', 'users'],
+  analytics: ['analytics', 'summary'],
+  recommendations: ['opportunities', 'recommendations'],
+  myApplications: ['applications', 'me'],
+  opportunityApplications: (id) => ['opportunities', id, 'applications'],
+  connections: ['networking', 'connections'],
+  suggestions: ['networking', 'suggestions'],
+  notifications: ['notifications'],
+  notificationsUnread: ['notifications', 'unread-count'],
+  leaderboard: (board) => ['leaderboard', board],
+  mentorEligibility: ['mentor', 'eligibility'],
+};

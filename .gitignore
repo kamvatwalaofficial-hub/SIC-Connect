@@ -1,0 +1,49 @@
+# ---------- .NET ----------
+bin/
+obj/
+*.user
+*.suo
+[Dd]ebug/
+[Rr]elease/
+*.dll
+*.pdb
+.vs/
+project.lock.json
+artifacts/
+
+# ---------- Node / React ----------
+node_modules/
+dist/
+dist-ssr/
+.vite/
+*.local
+
+# ---------- Env & secrets ----------
+.env
+.env.*
+!.env.example
+appsettings.Local.json
+*.pfx
+
+# ---------- Logs ----------
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ---------- OS / Editor ----------
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+.vscode/*
+!.vscode/extensions.json
+
+# Runtime-uploaded files (e.g. profile CVs)
+backend/SicConnect.Api/uploads/
+
+# ---------- Local overrides ----------
+appsettings.*.Local.json
+secrets.json
+*.key

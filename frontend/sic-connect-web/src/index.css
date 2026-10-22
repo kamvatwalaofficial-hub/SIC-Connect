@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    @apply bg-slate-50 text-slate-700 antialiased;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+  /* Typography hierarchy — slightly tighter tracking on headings. Colour is left to each
+     component so headings on coloured surfaces (auth panel, gradient banners) stay legible. */
+  h1, h2, h3, h4 {
+    letter-spacing: -0.01em;
+  }
+  /* Accessible, on-brand focus ring for keyboard users on interactive elements. */
+  a:focus-visible,
+  button:focus-visible,
+  [role='button']:focus-visible,
+  summary:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(20, 40, 160, 0.35);
+    border-radius: 0.5rem;
+  }
+  ::selection {
+    background-color: rgba(20, 40, 160, 0.14);
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold
+           transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
+           active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60 disabled:active:translate-y-0;
+  }
+  /* Primary — Samsung Blue, the single strong colour on any given screen. */
+  .btn-primary {
+    @apply btn bg-brand-600 text-white shadow-sm hover:bg-brand-700 hover:shadow focus-visible:ring-brand-500/50;
+  }
+  /* Secondary — white with a blue outline. */
+  .btn-secondary {
+    @apply btn border border-brand-200 bg-white text-brand-700 hover:border-brand-300 hover:bg-brand-50
+           focus-visible:ring-brand-500/40;
+  }
+  /* Neutral — for low-emphasis actions (e.g. Cancel) where blue would be too loud. */
+  .btn-neutral {
+    @apply btn border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 focus-visible:ring-slate-400/50;
+  }
+  /* Destructive — restrained, consistent warning red. */
+  .btn-danger {
+    @apply btn bg-red-600 text-white shadow-sm hover:bg-red-700 focus-visible:ring-red-500/50;
+  }
+  .input {
+    @apply w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-800
+           placeholder:text-slate-400 shadow-sm transition-colors
+           focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/25
+           disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400;
+  }
+  .label {
+    @apply mb-1.5 block text-sm font-medium text-slate-700;
+  }
+  /* Surface — soft rounded card with low-contrast elevation. */
+  .card {
+    @apply rounded-2xl border border-slate-200/80 bg-white shadow-card;
+  }
+  /* Interactive surface — lifts gently on hover/focus for micro-interaction feedback. */
+  .card-hover {
+    @apply transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover;
+  }
+  .badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold;
+  }
+  /* Small caption above a section — consistent, quiet section labelling. */
+  .section-eyebrow {
+    @apply text-xs font-semibold uppercase tracking-wide text-slate-500;
+  }
+}
+
+@layer utilities {
+  /* Subtle, professional page/element entrance. */
+  .enter {
+    @apply animate-fade-in-up;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .enter,
+    .card-hover,
+    .btn {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+}
