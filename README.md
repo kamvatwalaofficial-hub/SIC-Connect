@@ -23,11 +23,20 @@ connections, register for events and approve accounts without affecting anyone e
 
 ## About this project
 
-SIC Connect was built by a team from the Samsung Innovation Campus programme at Nelson Mandela
-University. **Kamva Twala** served as **project manager**, leading the team from requirements and
-UX design through to the working full-stack build:
+🥈 **Second place overall in the Samsung Innovation Campus hackathon (July 2026).**
 
-- Coordinated scope, planning and delivery across the frontend, backend and database work
+SIC Connect was built in **one week** by a team from the Samsung Innovation Campus programme at
+Nelson Mandela University. The brief was to create an alumni system that lets everyone who has
+been through the programme stay connected with one another, access opportunities, and showcase
+their career progress and the skills they gained. The team pitched the solution to Samsung and
+industry experts on 24 July 2026 and placed second overall.
+
+**Kamva Twala** served as **project manager and team leader**, leading the team from requirements
+and UX design through to the working full-stack build and the final pitch:
+
+- Led the team and coordinated scope, planning and delivery across the frontend, backend and
+  database work within the one-week deadline
+- Pitched the solution to a panel of Samsung and industry experts
 - Led the UX design: 12 high-fidelity screens and an interactive prototype following Samsung's
   One UI principles
 - Defined the fixed technology stack and the three-tier architecture
@@ -80,6 +89,13 @@ Every push to `main` that changes the frontend runs the
 3. Runs the demo API test suite (80 checks covering every endpoint, permissions and workflows)
 4. Builds the demo and deploys it to GitHub Pages with least-privilege permissions
 
+Every pull request and push to `main` also runs the [CI](.github/workflows/ci.yml) workflow, which
+builds the .NET backend and the React frontend and fails on high-severity vulnerabilities in either
+NuGet or npm packages.
+
+[Dependabot](.github/dependabot.yml) checks npm, NuGet and GitHub Actions dependencies weekly
+(Actions monthly) and opens grouped pull requests, which CI tests before they are merged.
+
 ---
 
 ## Repository structure
@@ -93,7 +109,8 @@ Every push to `main` that changes the frontend runs the
 ├── docs/
 │   └── gamification/          Design notes for the recognition and mentor system
 ├── .github/
-│   └── workflows/             CI/CD: test, audit, build and deploy the live demo
+│   ├── workflows/             CI (build + audit) and live-demo deployment
+│   └── dependabot.yml         weekly dependency updates
 ├── .gitignore
 └── README.md
 ```
@@ -146,7 +163,8 @@ npm run dev                                   # http://localhost:5173
 - **Demo data is Development-only** and uses fictional people on the reserved `.example`
   domain, so no real person's details are included.
 - `.env`, local settings files and certificates are excluded by `.gitignore`.
-- **Dependencies are audited in CI**, and deployment is blocked by high-severity vulnerabilities.
+- **Dependencies are audited in CI** (npm and NuGet), and deployment is blocked by high-severity vulnerabilities.
+- **Dependabot** keeps dependencies patched, with every upgrade tested by CI before merging.
 
 ---
 
@@ -179,7 +197,7 @@ See [backend/README.md](backend/README.md) for the full endpoint reference.
 ## Possible next steps
 
 - Refresh-token rotation and rate limiting on authentication endpoints
-- Extend CI to the backend: .NET build and tests, secret scanning, and static analysis
+- Add backend unit tests, secret scanning and static analysis (CodeQL) to CI
 - Upgrade to React Router 7 to clear two moderate-severity advisories that do not affect this app's usage
 - Containerised deployment to a cloud host with managed SQL and a secrets vault
 - Blob storage for avatars and CV uploads; email and push notification delivery

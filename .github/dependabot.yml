@@ -1,0 +1,68 @@
+# Dependabot keeps SIC Connect's dependencies patched.
+# It checks once a week and opens pull requests; each one is tested by the
+# "Deploy live demo" workflow (dependency audit, demo API tests, build) before you merge it.
+#
+# Also turn on, in Settings -> Advanced Security: "Dependabot alerts" and "Dependabot security updates".
+
+version: 2
+updates:
+  # Frontend: React + Vite (npm)
+  - package-ecosystem: "npm"
+    directory: "/frontend/sic-connect-web"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "07:00"
+      timezone: "Africa/Johannesburg"
+    open-pull-requests-limit: 5
+    labels: ["dependencies", "frontend"]
+    commit-message:
+      prefix: "deps(frontend)"
+    groups:
+      # Bundle routine minor and patch upgrades into one PR; major upgrades still get their own PR.
+      frontend-minor-and-patch:
+        applies-to: version-updates
+        update-types: ["minor", "patch"]
+      frontend-security:
+        applies-to: security-updates
+        update-types: ["minor", "patch"]
+
+  # Backend: ASP.NET Core Web API (NuGet)
+  - package-ecosystem: "nuget"
+    directory: "/backend/SicConnect.Api"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "07:00"
+      timezone: "Africa/Johannesburg"
+    open-pull-requests-limit: 5
+    labels: ["dependencies", "backend"]
+    commit-message:
+      prefix: "deps(backend)"
+    groups:
+      backend-minor-and-patch:
+        applies-to: version-updates
+        update-types: ["minor", "patch"]
+      backend-security:
+        applies-to: security-updates
+        update-types: ["minor", "patch"]
+    ignore:
+      # These packages follow the .NET version. The API targets .NET 8, so new major
+      # versions (built for .NET 9+) would not install. 8.0.x patches, including security
+      # fixes, still come through. Remove this when upgrading the project's .NET version.
+      - dependency-name: "Microsoft.AspNetCore.*"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "Microsoft.EntityFrameworkCore*"
+        update-types: ["version-update:semver-major"]
+
+  # GitHub Actions used by the workflows (also clears "Node.js deprecated" warnings over time)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    labels: ["dependencies", "ci"]
+    commit-message:
+      prefix: "deps(ci)"
+    groups:
+      github-actions:
+        patterns: ["*"]
