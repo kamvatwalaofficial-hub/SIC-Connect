@@ -1,7 +1,12 @@
-import { useState } from 'react';
+import { Suspense, lazy, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../context/AuthContext.jsx';
 import { Field } from '../../../components/Field.jsx';
+
+const DemoAccounts =
+  import.meta.env.VITE_DEMO === 'true'
+    ? lazy(() => import('../../../demo/DemoBanner.jsx').then((m) => ({ default: m.DemoAccounts })))
+    : null;
 
 export function LoginPage() {
   const { login } = useAuth();
@@ -16,13 +21,12 @@ export function LoginPage() {
 
   const update = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
+  const signIn = async (credentials) => {
     setError(null);
     setNotice(null);
     setSubmitting(true);
     try {
-      await login(form);
+      await login(credentials);
       navigate(from, { replace: true });
     } catch (err) {
       // A pending/rejected/info-requested account is not an error the user can fix by retrying.
@@ -31,6 +35,16 @@ export function LoginPage() {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    signIn(form);
+  };
+
+  const quickSignIn = ({ email, password }) => {
+    setForm({ email, password });
+    signIn({ email, password });
   };
 
   return (
@@ -74,6 +88,12 @@ export function LoginPage() {
           {submitting ? 'Signing in…' : 'Sign in'}
         </button>
       </form>
+
+      {DemoAccounts && (
+        <Suspense fallback={null}>
+          <DemoAccounts onSelect={quickSignIn} disabled={submitting} />
+        </Suspense>
+      )}
 
       <p className="mt-6 text-center text-sm text-slate-500">
         New to SIC Connect?{' '}

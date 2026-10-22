@@ -21,6 +21,16 @@ export const apiClient = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
+// Demo build (VITE_DEMO=true): answer every request from an in-browser mock of the API with
+// fictional sample data, so the app can be hosted as a static site. The import is dynamic and
+// behind a build-time constant, so normal builds do not include any demo code.
+if (import.meta.env.VITE_DEMO === 'true') {
+  apiClient.defaults.adapter = async (config) => {
+    const { demoAdapter } = await import('../demo/mockServer.js');
+    return demoAdapter(config);
+  };
+}
+
 apiClient.interceptors.request.use((config) => {
   const token = getToken();
   if (token) {

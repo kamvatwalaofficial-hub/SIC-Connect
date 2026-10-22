@@ -42,7 +42,9 @@ function AlumniDashboard() {
   const connections = useConnections();
 
   const latestAnnouncements = (announcements.data || []).slice(0, 3);
-  const upcomingEvents = (events.data || []).slice(0, 3);
+  const upcomingEvents = (events.data || [])
+    .filter((e) => new Date(e.endsAt || e.startsAt) >= new Date())
+    .slice(0, 3);
   const latestOpportunities = (opportunities.data || []).slice(0, 4);
   const myMentorshipRequests = (connections.data || [])
     .filter((c) => c.type === 'Mentorship' && !c.isIncoming)

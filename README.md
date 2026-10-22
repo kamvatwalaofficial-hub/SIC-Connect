@@ -6,6 +6,12 @@ SIC Connect gives SIC graduates one place to stay connected after the programme:
 alumni directory, career opportunities, events, mentorship, a project showcase and
 announcements, with a recognition system that rewards community participation.
 
+### ▶ [Try the live demo](https://kamvatwala.com/SIC-Connect/)
+
+Sign in with one click as an **Alumni**, **Mentor** or **Admin** user. The demo runs entirely in
+your browser with fictional sample data, so you can apply for opportunities, message
+connections, register for events and approve accounts without affecting anyone else.
+
 | | |
 | --- | --- |
 | **Frontend** | React 18 + Vite, Tailwind CSS, React Router, React Query, Axios |
@@ -52,6 +58,30 @@ show users the reasons behind each suggestion.
 
 ---
 
+## Live demo and deployment pipeline
+
+The [live demo](https://kamvatwala.com/SIC-Connect/) is the real React frontend, built in a
+special **demo mode** and hosted free on GitHub Pages:
+
+- **No backend needed.** In demo mode the Axios client answers every API call from an
+  in-browser mock (`frontend/sic-connect-web/src/demo/`) that mirrors the ASP.NET Core API's
+  routes, response shapes, permission checks and scoring rules, using the same fictional
+  people as the backend's database seeder.
+- **Private per visitor.** Changes are saved in the visitor's own browser storage and can be
+  reset from the banner. Nothing is sent to a server.
+- **Not in production builds.** The demo code loads only when built with `npm run build:demo`;
+  a normal `npm run build` contains none of it.
+
+Every push to `main` that changes the frontend runs the
+[Deploy live demo](.github/workflows/deploy-demo.yml) GitHub Actions workflow:
+
+1. Installs dependencies from the lockfile (`npm ci`)
+2. **Audits dependencies** and fails the build on any high-severity vulnerability
+3. Runs the demo API test suite (80 checks covering every endpoint, permissions and workflows)
+4. Builds the demo and deploys it to GitHub Pages with least-privilege permissions
+
+---
+
 ## Repository structure
 
 ```
@@ -62,6 +92,8 @@ show users the reasons behind each suggestion.
 │   └── sic-connect-web/       React + Vite single-page app (see frontend/README.md)
 ├── docs/
 │   └── gamification/          Design notes for the recognition and mentor system
+├── .github/
+│   └── workflows/             CI/CD: test, audit, build and deploy the live demo
 ├── .gitignore
 └── README.md
 ```
@@ -114,6 +146,7 @@ npm run dev                                   # http://localhost:5173
 - **Demo data is Development-only** and uses fictional people on the reserved `.example`
   domain, so no real person's details are included.
 - `.env`, local settings files and certificates are excluded by `.gitignore`.
+- **Dependencies are audited in CI**, and deployment is blocked by high-severity vulnerabilities.
 
 ---
 
@@ -146,7 +179,8 @@ See [backend/README.md](backend/README.md) for the full endpoint reference.
 ## Possible next steps
 
 - Refresh-token rotation and rate limiting on authentication endpoints
-- GitHub Actions CI with build, test, dependency and secret scanning
+- Extend CI to the backend: .NET build and tests, secret scanning, and static analysis
+- Upgrade to React Router 7 to clear two moderate-severity advisories that do not affect this app's usage
 - Containerised deployment to a cloud host with managed SQL and a secrets vault
 - Blob storage for avatars and CV uploads; email and push notification delivery
 - A full POPIA data-handling review before handling real alumni data

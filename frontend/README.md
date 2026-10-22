@@ -41,6 +41,21 @@ Copy `.env.example` to `.env` and adjust:
 | `VITE_API_BASE_URL` | API base URL. Default `/api` uses the Vite dev proxy; set an absolute URL to call the API directly. |
 | `VITE_API_PROXY_TARGET` | Where the dev proxy forwards `/api` (default `http://localhost:5000`). |
 
+## Demo mode (static, no backend)
+
+The app can also be built as a self-contained demo that answers every API call from an
+in-browser mock with fictional sample data (`src/demo/`). This is what powers the live demo
+on GitHub Pages.
+
+```bash
+npm run build:demo     # builds with .env.demo (VITE_DEMO=true, VITE_BASE=/SIC-Connect/)
+npm run preview:demo   # serves it at http://localhost:4173/SIC-Connect/
+npm run test:demo      # runs the demo API test suite
+```
+
+Demo state is stored per visitor in `localStorage` and can be reset from the banner. A normal
+`npm run build` excludes all demo code.
+
 ## Run
 
 ```bash
