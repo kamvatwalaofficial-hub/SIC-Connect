@@ -1,6 +1,10 @@
 # Dependabot keeps SIC Connect's dependencies patched.
-# It checks once a week and opens pull requests; each one is tested by the
-# "Deploy live demo" workflow (dependency audit, demo API tests, build) before you merge it.
+# It checks once a week and opens pull requests; each one must pass the CI checks
+# ("Backend (.NET 8)" and "Frontend (React)") before the "Protect main" ruleset lets it merge.
+#
+# Only minor and patch updates are proposed automatically. Major upgrades (React 19,
+# Vite 8, ESLint 10, Swashbuckle 10, ...) change APIs and need a planned migration, so
+# they are done by hand; security fixes for the current versions still arrive as patches.
 #
 # Also turn on, in Settings -> Advanced Security: "Dependabot alerts" and "Dependabot security updates".
 
@@ -26,6 +30,13 @@ updates:
       frontend-security:
         applies-to: security-updates
         update-types: ["minor", "patch"]
+    ignore:
+      # Major upgrades are planned migrations, not automatic bumps.
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+      # 0.5+ requires ESLint 9; the project is on ESLint 8. Remove when upgrading ESLint.
+      - dependency-name: "eslint-plugin-react-refresh"
+        versions: [">=0.5.0"]
 
   # Backend: ASP.NET Core Web API (NuGet)
   - package-ecosystem: "nuget"
@@ -47,12 +58,11 @@ updates:
         applies-to: security-updates
         update-types: ["minor", "patch"]
     ignore:
-      # These packages follow the .NET version. The API targets .NET 8, so new major
-      # versions (built for .NET 9+) would not install. 8.0.x patches, including security
-      # fixes, still come through. Remove this when upgrading the project's .NET version.
-      - dependency-name: "Microsoft.AspNetCore.*"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "Microsoft.EntityFrameworkCore*"
+      # Major upgrades are planned migrations, not automatic bumps. In particular the
+      # Microsoft.AspNetCore.* and Microsoft.EntityFrameworkCore* packages follow the .NET
+      # version: the API targets .NET 8, so their next majors (built for .NET 9+) would not
+      # install. 8.0.x patches, including security fixes, still come through.
+      - dependency-name: "*"
         update-types: ["version-update:semver-major"]
 
   # GitHub Actions used by the workflows (also clears "Node.js deprecated" warnings over time)
